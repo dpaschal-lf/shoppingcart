@@ -9,5 +9,9 @@ function error_handler( $error ){
     print( json_encode( $output ));
 }
 
+function startup(){
+    header("Content-type:application/json");
+}
+
 
 ?>
