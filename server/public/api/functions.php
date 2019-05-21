@@ -5,10 +5,9 @@ function error_handler( $error ){
         'success'=>false,
         'error'=>$error->getMessage()
     ];
+    http_response_code(500);
     print( json_encode( $output ));
 }
 
-$output = file_get_contents('dummy-products-list.json');
 
-print($output);
 ?>
