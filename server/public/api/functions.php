@@ -8,4 +8,7 @@ function error_handler( $error ){
     print( json_encode( $output ));
 }
 
+$output = file_get_contents('dummy-products-list.json');
+
+print($output);
 ?>
