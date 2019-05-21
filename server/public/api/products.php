@@ -12,10 +12,20 @@ require_once('functions.php');
 
 set_exception_handler('error_handler');
 
-doStuff();
+$query = "SELECT * FROM products";
 
-$output = file_get_contents('dummy-products-list.json');
+$result = mysqli_query($conn, $query);
 
-print($output);
+if(!$result){
+  throw new Exception(mysqli_error($conn));
+}
+
+$output = [];
+
+while($row = mysqli_query($result)){
+  $output[] = $row;
+}
+
+$json_output = json_encode($output);
 
 ?>
