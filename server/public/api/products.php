@@ -14,13 +14,25 @@ set_exception_handler('error_handler');
 
 startup();
 
+if(!empty($_GET['id'])){
+  $id = $_GET['id'];
+  $whereClause = " WHERE `id`=$id";
+} else {
+  $id = false;
+  $whereClause = '';
+}
+
 require_once('db_connection.php');
-$query = "SELECT * FROM `products`";
+$query = "SELECT * FROM `products`$whereClause";
 
 $result = mysqli_query($conn, $query);
 
 if(!$result){
   throw new Exception(mysqli_error($conn));
+}
+
+if(mysqli_num_rows($result)===0 && $id!==false){
+  throw new Exception("Invalid ID: $id", 404);
 }
 
 $output = [];
