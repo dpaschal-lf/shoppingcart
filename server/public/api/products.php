@@ -16,6 +16,9 @@ startup();
 
 if(!empty($_GET['id'])){
   $id = $_GET['id'];
+  if(!is_numeric($id)){
+    throw new Exception('id needs to be a number');
+  }
   $whereClause = " WHERE `id`=$id";
 } else {
   $id = false;
