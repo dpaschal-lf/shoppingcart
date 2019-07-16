@@ -15,18 +15,27 @@ set_exception_handler('error_handler');
 startup();
 
 if(!empty($_GET['id'])){
-  $id = $_GET['id'];
+  $id = intval($_GET['id']);
   if(!is_numeric($id)){
     throw new Exception('id needs to be a number');
   }
-  $whereClause = " WHERE `id`=$id";
+  $query = "SELECT p.id, p.name, p.price, p.shortDescription, 
+    GROUP_CONCAT( i.url)  AS images
+    FROM products as p 
+    JOIN images as i 
+      ON p.id=i.productID
+    WHERE p.id = $id
+    GROUP BY p.id";
 } else {
   $id = false;
-  $whereClause = '';
+  $query = "SELECT p.id, p.name, p.price, p.shortDescription,
+  (SELECT url FROM images WHERE productID = p.id LIMIT 1) AS image
+  FROM products AS p";
 }
 
+print($query);
+
 require_once('db_connection.php');
-$query = "SELECT * FROM `products`$whereClause";
 
 $result = mysqli_query($conn, $query);
 
