@@ -48,10 +48,15 @@ if(mysqli_num_rows($result)===0 && $id!==false){
 }
 
 $output = [];
-
-while($row = mysqli_fetch_assoc($result)){
-  $output[] = $row;
+if($id){
+  $output = mysqli_fetch_assoc($result);
+  $output['images'] = explode(',', $output['images'] );
+} else {
+  while($row = mysqli_fetch_assoc($result)){
+    $output[] = $row;
+  }
 }
+
 
 $json_output = json_encode($output);
 
