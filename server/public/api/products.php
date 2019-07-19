@@ -1,13 +1,5 @@
 <?php
 
-// header('Content-Type: application/json');
-
-// if (empty($_GET['id'])) {
-//   readfile('dummy-products-list.json');
-// } else {
-//   readfile('dummy-product-details.json');
-// }
-
 require_once('functions.php');
 
 set_exception_handler('error_handler');
@@ -15,12 +7,12 @@ set_exception_handler('error_handler');
 startup();
 
 if(!empty($_GET['id'])){
-  $id = intval($_GET['id']);
-  if(!is_numeric($id)){
+  $id = intval( $_GET[ 'id' ] );
+  if($id !== 0){
     throw new Exception('id needs to be a number');
   }
   $query = "SELECT p.id, p.name, p.price, p.shortDescription, 
-    GROUP_CONCAT( i.url)  AS images
+    GROUP_CONCAT( i.url )  AS images
     FROM products as p 
     JOIN images as i 
       ON p.id=i.productID
@@ -33,7 +25,7 @@ if(!empty($_GET['id'])){
   FROM products AS p";
 }
 
-print($query);
+//print($query);
 
 require_once('db_connection.php');
 
