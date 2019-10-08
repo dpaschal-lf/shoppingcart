@@ -12,7 +12,7 @@ if(empty($bodyData['id'])){
 
 $id = intval($bodyData['id']);
 
-if($id===0){
+if($id<=0){
     throw new Exception('product id must be valid: '.$bodyData['id']);
 }
 
