@@ -8,7 +8,7 @@ startup();
 
 if(!empty($_GET['id'])){
   $id = intval( $_GET[ 'id' ] );
-  if($id !== 0){
+  if($id === 0){
     throw new Exception('id needs to be a number');
   }
   $query = "SELECT p.id, p.name, p.price, p.shortDescription, 
