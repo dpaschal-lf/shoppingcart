@@ -1,28 +1,81 @@
 # connect to products table and fetch data
 
 ### task list 1 - add to cart
-1. Use the accompanying “cart.sql” file add to your database schema, you should also update your dbdesigner.net schema with this new structure
+
+For this update, remove / comment out the existing code that is in cart.php
+
+#### 1-1 add tables to DB
+In order to handle cart data, we need to add our cart tables to our database.  We've already made the SQL for it to add to your existing data
+1. Open the accompanying “cart.sql” file in your editor
+1. copy all of the data
+1. go to your mysql client (phpmyadmin)
+1. select your wicked-sales database
+1. go to the SQL tab
+1. paste the cart.sql data into the sql tab
+1. click go
+1. there should now be a cart and cartItems tables in your wicked sales database
+
+#### 1-2 update your schema
+Whenever we update our design, we need to update our schema to reflect it so we can always have a clear picture of what our database is
+-go to dbdesigner.net
+- remove the image field from your product table (it is now in your images table
+- add the cart table and attached fields
+- add the cartItems table and attached fields
+- add foreign key constraints.  In this case cartItems productId attaches to products ID and cartITems cartId attaches to cart ID.
+#### 1-3 update functions.php with json body pulling function
+We will often need to grab json post data from the body of incoming messages, so we're going to update our helper functions with a function to do this
 1. Update functions with getBodyData to get body data and convert from json to variables (you did this in a prototype to get data)
+
+Make new files
+- in the same folder as cart.php
+- add cart_add.php
+- add cart_get.php
+
+#### 1-4 prevent direct access of sub-files 
+We often break up functionality into other files.  We don't want these sub-files to be accessed directly.  One way to do this is to make a variable in the head file (cart.php) that is checked for in the sub files (cart_add.php and cart_get.php)
+
 1. In cart.php Create a new [constant](https://www.php.net/manual/en/function.define.php), INTERNAL, set to value true
-1. remove / comment out the existing code.
-1. Require functions.php
-1. [Start a session](https://www.php.net/manual/en/function.session-start.php)
-1. Set your error handler
-1. Require your connection file
-1. Make a switch
-    1. It takes in the ```$_SERVER``` [SERVER superglobal](https://www.php.net/manual/en/reserved.variables.server.php) “REQUEST_METHOD”
-    1. If POST, it requires cart_add.php
-    1. If GET, it requires cart_get.php
-1. Make a new file, cart_add.php, in the same folder as cart.php
 1. In cart_add.php
     1. Check if the constant INTERNAL is defined.  See the "defined" function in php.net
         - If yes, exit (not throw an error).  Make sure to print a message not about not allowing 1. direct access
-    1. Use the getBodyData function to get the json body, store to variable $id
-    1. Parse int the $id variable to sanitize it, check if it is greater than 0, throw an error otherwise
-    1. See if id came in the json body data, and store it into a variable, $id, if it did, 
-    1. Make conditional to test if ```$_SESSION[‘cartId’]``` is empty.  Read more about the ```$_SESSION``` [SESSION superglobal here](https://www.php.net/manual/en/reserved.variables.session.php)
-        - If yes, store ```$_SESSION[‘cartId’]``` into a variable $cartID
-        - If not, store false into the variable
+    -- do example test
+1. In cart_get.php
+    1. Check if the constant INTERNAL is defined.  See the "defined" function in php.net
+        - If yes, exit (not throw an error).  Make sure to print a message not about not allowing 1. direct access
+    -- do example test
+
+#### 1-5 fill out basic start up of cart.php
+We need to load helper functions, db connection file, and set our error handler
+1. in cart.php
+1. Require functions.php
+1. Set your error handler
+1. Require your connection file
+
+#### 1-6 set up PHP sessions
+Remembering data between calls of our files is important for many uses, like remembering which shopping cart is yours.  So in this case we will store our cartID into sessions, like storing it into localstorage in JS.  If cartID is there, we will grab it, otherwise we will set it to false so we know we need to generate it later
+1. At the top of your cart.php file, [Start a session](https://www.php.net/manual/en/function.session-start.php)
+1. Below your error handler set, make a conditional to test if ```$_SESSION[‘cartId’]``` is empty.  Read more about the ```$_SESSION``` [SESSION superglobal here](https://www.php.net/manual/en/reserved.variables.session.php)
+    - If not empty, store ```$_SESSION[‘cartId’]``` into a variable $cartID
+    - If empty, store false into the variable
+
+#### 1-7 check method uses to access cart
+We want to see which method was used to access this file.  This allows the client to communicate to us which action to take with our cart.  POST will add things to the cart, GET will grab the entire cart for the current user.
+1. in Cart.php, below the db connection, Make a switch
+    1. It takes in the ```$_SERVER``` [SERVER superglobal](https://www.php.net/manual/en/reserved.variables.server.php) “REQUEST_METHOD”
+    1. If POST, it requires cart_add.php
+    1. If GET, it requires cart_get.php
+---- do example test
+
+#### 1-8 check for product id
+Since we are adding a product to the cart, we need to know which product to add.  The client should have sent us that ID, so we are going to look in the body for that ID
+    1. In cart_add.php towards the top
+    1. Use the getBodyData function to get the json body, store to variable $product_id
+    1. Parse int the $product_id variable to sanitize it, check if it is greater than 0, throw an error otherwise
+    -- do example test
+    1. See if id came in the json body data, and store it into a variable, $product_id, if it did, 
+
+
+
     1. Make a query to get the price from products for the given id you got from the body json
     1. Send the query to the database and store the result
     1. Make sure result is valid
