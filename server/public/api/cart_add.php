@@ -1,6 +1,6 @@
 <?php
 
-if(empty(INTERNAL)){
+if(!is_defined(INTERNAL)){
     die('no direct calls');
 }
 
