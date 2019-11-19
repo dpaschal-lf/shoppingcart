@@ -1,21 +1,31 @@
 <?php
 
-header('Content-Type: application/json');
+define('INTERNAL', true);
 
-$method = $_SERVER['REQUEST_METHOD'];
-$item = file_get_contents('php://input');
+require_once('functions.php');
 
-if ($method == 'GET') {
-  readfile('dummy-cart-items.json');
-} else if ($method == 'POST') {
-  http_response_code(201);
-  print($item);
-} else {
-  http_response_code(404);
-  print(json_encode([
-    'error' => 'Not Found',
-    'message' => "Cannot $method /api/cart.php"
-  ]));
+session_start();
+
+set_exception_handler('error_handler');
+
+require_once('db_connection.php');
+
+switch($_SERVER['REQUEST_METHOD']){
+  case 'POST':
+    include('cart_add.php');
+    break;
+  case 'GET':
+    include('cart_get.php');
+    break;
 }
 
+// $query = "";
+
+// $statement = mysqli_prepare($conn, "SELECT ?");
+// $text = 'hello';
+// mysqli_stmt_bind_param($statement, 's', $text );
+// mysqli_stmt_execute($statement);
+// $result = mysqli_stmt_get_result($statement);
+// $data = mysqli_fetch_assoc($result);
+// print_r($data);
 ?>
